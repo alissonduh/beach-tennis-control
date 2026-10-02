@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#123b5d">
+<title>Beach Tennis Control</title>
+<style>
+:root{--navy:#123b5d;--blue:#2879a8;--sky:#eaf5fa;--green:#16805b;--red:#c94b4b;--gold:#e4a92f;--text:#183244}
+*{box-sizing:border-box}body{margin:0;background:#f4f7f9;color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+header{background:linear-gradient(135deg,#123b5d,#1f668d);color:#fff;padding:18px 16px 16px;position:sticky;top:0;z-index:20;box-shadow:0 3px 12px #0002}
+header .top{display:flex;align-items:center;justify-content:space-between;gap:12px}h1{font-size:21px;margin:0}.subtitle{font-size:12px;opacity:.8;margin-top:3px}
+.iconbtn{background:#ffffff18;border:1px solid #ffffff30;color:#fff;border-radius:10px;padding:9px 11px}
+nav{position:sticky;top:76px;z-index:19;background:#fff;border-bottom:1px solid #dde5e9;display:flex;overflow:auto}
+nav button{flex:1;min-width:92px;border:0;background:#fff;color:#63717b;padding:12px 8px;font-weight:700;font-size:12px}
+nav button.active{color:var(--blue);border-bottom:3px solid var(--blue)}
+main{max-width:900px;margin:auto;padding:14px 14px 90px}.card{background:#fff;border:1px solid #e1e8ec;border-radius:15px;padding:15px;margin-bottom:12px;box-shadow:0 2px 9px #17364d0d}
+h2{margin:0 0 10px;font-size:19px}h3{margin:5px 0 9px;font-size:16px}.muted{color:#71808a;font-size:13px}.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.stat{background:var(--sky);padding:13px;border-radius:12px}.stat b{font-size:22px;display:block}.stat span{font-size:12px;color:#607682}
+button,.btn{border:0;border-radius:10px;background:var(--blue);color:#fff;padding:11px 14px;font-weight:800;cursor:pointer}.secondary{background:#e7eef2;color:var(--navy)}.danger{background:var(--red)}
+input,select{width:100%;padding:11px;border:1px solid #ccd8de;border-radius:9px;background:#fff;font-size:15px;color:var(--text)}.row{display:grid;grid-template-columns:1fr auto;gap:8px}
+.players{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}.player{padding:10px;border-radius:9px;background:#f4f7f9;border:1px solid #e3e9ed;display:flex;justify-content:space-between;gap:8px}.x{border:0;background:#eee;color:#b33;padding:3px 7px;border-radius:7px}
+.team{padding:12px;border:1px solid #dce6eb;border-radius:11px;background:#fff;margin:8px 0}.manualteams{display:grid;gap:10px}.manualteam{display:grid;grid-template-columns:1fr 1fr auto;gap:8px;align-items:center}.manualteam .num{font-weight:900;color:var(--blue);min-width:55px}.manualteam select{min-width:0}.hint{padding:10px;border-radius:10px;background:#f6f9fa;color:#60717c;font-size:12px}
+.settings-grid{display:grid;gap:10px}.setting{border:1px solid #dce6eb;border-radius:12px;padding:12px;background:#fff}
+.setting label{display:flex;gap:10px;align-items:flex-start;cursor:pointer}.setting input{width:auto;margin-top:3px}.setting b{display:block}.setting small{display:block;color:#71808a;margin-top:3px}
+.criteria-list{display:grid;gap:8px}.criteria-item{display:grid;grid-template-columns:auto 1fr;gap:10px;align-items:center;padding:10px;border:1px solid #e0e7eb;border-radius:10px;background:#f8fafb;cursor:grab}.criteria-item input{width:auto}.criteria-item .drag{font-size:18px;color:#82919a}.criteria-item .criterion-order{display:flex;gap:4px}.criteria-item .criterion-order button{padding:5px 9px;min-width:32px}.criteria-item .criterion-order button:disabled{opacity:.35;cursor:not-allowed}.team strong{color:var(--blue)}
+.courts{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.court{background:#fff;border:1px solid #dce6eb;border-radius:14px;padding:12px}.court h3{display:flex;justify-content:space-between}.live{color:var(--green);font-size:11px;font-weight:900}
+.match{border:1px solid #dce6eb;border-radius:13px;padding:13px;margin:9px 0}.matchhead{display:flex;justify-content:space-between;font-size:12px;color:#697a85}.teams{font-weight:800;font-size:15px;margin:9px 0}.score{display:grid;grid-template-columns:1fr 60px 60px;gap:8px;align-items:center}.score input{text-align:center;font-size:22px;font-weight:900}.done{background:#e8f5ef;border-color:#bfe3d2}.pending{background:#fff8e7}
+.badge{padding:4px 7px;border-radius:20px;font-size:11px;background:#e8f5ef;color:var(--green);font-weight:800}.badge.pending{background:#fff1d7;color:#986d16}
+table{width:100%;border-collapse:collapse;font-size:13px}th,td{padding:9px 6px;border-bottom:1px solid #e5ebee;text-align:left}th{color:#60717c;background:#f6f9fa}
+.tabs2{display:flex;gap:7px;overflow:auto;margin:0 0 12px}.tabs2 button{white-space:nowrap;padding:8px 11px;font-size:12px}.tabs2 button.active{background:var(--navy)}
+.empty{text-align:center;padding:25px 10px;color:#74828a}
+footer{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid #dde5e9;padding:9px;display:flex;gap:8px;z-index:18}footer button{flex:1}
+.toast{position:fixed;left:50%;bottom:78px;transform:translateX(-50%);background:#17364d;color:#fff;padding:10px 14px;border-radius:10px;z-index:50;font-size:13px}
+@media(max-width:680px){.courts{grid-template-columns:1fr}.grid3{grid-template-columns:repeat(3,1fr)}}
+</style>
+
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Beach Tennis">
+<link rel="apple-touch-icon" sizes="180x180" href="icons/icon-180.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+<link rel="icon" type="image/png" sizes="512x512" href="icons/icon-512.png">
+<style>
+html,body{overscroll-behavior-y:none}
+body{-webkit-tap-highlight-color:transparent}
+button,input,select{-webkit-appearance:none;appearance:none}
+button{touch-action:manipulation}
+@media(max-width:680px){
+  header{padding-top:max(18px,calc(env(safe-area-inset-top) + 10px))}
+  main{padding-bottom:calc(90px + env(safe-area-inset-bottom))}
+  footer{padding-bottom:calc(9px + env(safe-area-inset-bottom))}
+  nav{top:76px}
+}
+</style>
+
+</head>
+<body>
+<header><div class="top"><div><h1>🏖️ Beach Tennis Control</h1><div class="subtitle">Torneio • pontos até 7 • 3 quadras</div></div><button class="iconbtn" onclick="newTournament()">＋ Novo</button></div></header>
+<nav id="nav"></nav>
+<main id="app"></main>
+<footer><button onclick="go('quadras')">🏖️ Quadras</button><button onclick="go('jogos')">📋 Jogos</button><button onclick="go('classificacao')">🏆 Ranking</button></footer>
+<script>
+const S={tab:"inicio",players:[],teams:[],manualTeams:[],matches:[],round:1,
+scoreMode:"ate7",rankCriteria:["wins","gamesFor","saldo","head"]};
+const tabs=[["inicio","Início"],["jogadores","Jogadores"],["sorteio","Duplas"],["config","⚙️ Configurações"],["quadras","Quadras"],["jogos","Jogos"],["classificacao","Ranking"]];
+function save(){localStorage.setItem("btc",JSON.stringify(S))}
+function load(){try{let x=JSON.parse(localStorage.getItem("btc"));if(x)Object.assign(S,x);if(!S.scoreMode)S.scoreMode="ate7";if(!S.rankCriteria)S.rankCriteria=["wins","gamesFor","saldo","head"]}catch(e){}}
+function toast(t){let x=document.createElement("div");x.className="toast";x.textContent=t;document.body.appendChild(x);setTimeout(()=>x.remove(),1800)}
+function go(t){S.tab=t;render()}
+function renderNav(){document.getElementById("nav").innerHTML=tabs.map(([id,n])=>`<button class="${S.tab===id?'active':''}" onclick="go('${id}')">${n}</button>`).join("")}
+function render(){renderNav();let a=document.getElementById("app");a.innerHTML={inicio:home,jogadores:playersPage,sorteio:teamsPage,config:settingsPage,quadras:courtsPage,jogos:gamesPage,classificacao:rankingPage}[S.tab]();save()}
+function home(){let fin=S.matches.filter(m=>m.done).length;return `<div class="card"><h2>Controle do torneio</h2><p class="muted">Cadastre os participantes, sorteie as duplas e acompanhe as 3 quadras em tempo real.</p><div class="grid3"><div class="stat"><b>${S.players.length}</b><span>Jogadores</span></div><div class="stat"><b>${S.teams.length}</b><span>Duplas</span></div><div class="stat"><b>${fin}/${S.matches.length}</b><span>Jogos</span></div></div></div>
+<div class="card"><h3>Acesso rápido</h3><div class="grid"><button onclick="go('jogadores')">👥 Jogadores</button><button onclick="go('sorteio')">🎲 Sortear duplas</button><button onclick="go('quadras')">🏖️ Ver quadras</button><button onclick="go('classificacao')">🏆 Ver ranking</button><button onclick="go('config')">⚙️ Configurações</button></div></div>`}
+function playersPage(){let list=S.players.map((p,i)=>`<div class="player"><span><b>${i+1}.</b> ${p}</span><button class="x" onclick="removePlayer(${i})">×</button></div>`).join("");return `<div class="card"><h2>👥 Jogadores</h2><div class="row"><input id="pn" placeholder="Nome do jogador" onkeydown="if(event.key==='Enter')addPlayer()"><button onclick="addPlayer()">Adicionar</button></div><p class="muted">Cadastre entre 8 e 16 jogadores.</p><div class="players">${list||"<div class='empty'>Nenhum jogador ainda.</div>"}</div></div>`}
+function addPlayer(){let e=document.getElementById("pn"),n=e.value.trim();if(!n)return;if(S.players.length>=16)return toast("Limite de 16 jogadores");S.players.push(n);e.value="";render();toast("Jogador adicionado")}
+function removePlayer(i){if(S.teams.length)return toast("Para alterar jogadores, crie um novo torneio");S.players.splice(i,1);render()}
+function settingsPage(){
+let modes=[
+["ate7","🏁 Pontos até 7","O primeiro a chegar a 7 pontos vence. Ex.: 7×5."],
+["6x4","🎾 Set 6×4","Jogo encerrado no resultado de 6×4 ou equivalente. Use o placar de games."],
+["soma7","➕ Somatória até 7 games","A partida considera a soma dos games, com limite de 7 no total."]
+];
+let modeHTML=modes.map(x=>`<div class="setting"><label><input type="radio" name="scoreMode" value="${x[0]}" ${S.scoreMode===x[0]?"checked":""}><span><b>${x[1]}</b><small>${x[2]}</small></span></label></div>`).join("");
+let labels={wins:"Vitórias",gamesFor:"Games a favor",saldo:"Saldo de games",head:"Confronto direto"};
+let defaults=["wins","gamesFor","saldo","head"];
+let saved=(S.rankCriteria&&S.rankCriteria.length?S.rankCriteria:["wins","gamesFor","saldo","head"]);
+let crit=[...saved,...defaults.filter(c=>!saved.includes(c))];
+let criteriaHTML=crit.map((c,i)=>`<div class="criteria-item" data-criterion="${c}"><span class="drag">☰</span><label><input type="checkbox" value="${c}" ${saved.includes(c)?"checked":""}><b>${labels[c]}</b></label><span class="criterion-order"><button type="button" class="secondary" onclick="moveCriterion(this,-1)" ${i===0?"disabled":""} aria-label="Mover para cima">↑</button><button type="button" class="secondary" onclick="moveCriterion(this,1)" ${i===crit.length-1?"disabled":""} aria-label="Mover para baixo">↓</button></span></div>`).join("");
+return `<div class="card"><h2>⚙️ Configurações do torneio</h2>
+<p class="muted">Defina estas regras antes de iniciar os jogos. As configurações ficam salvas neste navegador.</p>
+<div class="settings-grid"><h3>🎯 Critério do placar</h3>${modeHTML}</div>
+<div class="card" style="padding:0;border:0;box-shadow:none;margin-top:18px"><h3>🏆 Critérios de classificação</h3>
+<p class="muted">A ordem abaixo será usada para desempatar as duplas. <b>Vitórias</b> permanece como primeiro critério.</p>
+<div class="criteria-list">${criteriaHTML}</div>
+<div class="hint" style="margin-top:10px">O confronto direto será usado quando as duplas empatadas tiverem se enfrentado.</div></div>
+<button style="width:100%;margin-top:12px" onclick="saveSettings()">✓ Salvar configurações</button></div>
+<div class="card"><h3>Configuração atual</h3><p class="muted">${scoreLabel()} • ${criteriaSummary()}</p></div>`;
+}
+function scoreLabel(){
+return ({ate7:"Pontos até 7", "6x4":"Set 6×4", soma7:"Somatória até 7 games"})[S.scoreMode]||"Pontos até 7";
+}
+function criteriaSummary(){
+let l={wins:"Vitórias",gamesFor:"Games a favor",saldo:"Saldo de games",head:"Confronto direto"};
+return (S.rankCriteria||["wins","gamesFor","saldo","head"]).map((x,i)=>`${i+1}º ${l[x]}`).join(" → ");
+}
+function moveCriterion(button, direction){
+let item=button.closest(".criteria-item"), list=item.parentElement;
+if(direction<0 && item.previousElementSibling) list.insertBefore(item,item.previousElementSibling);
+if(direction>0 && item.nextElementSibling) list.insertBefore(item.nextElementSibling,item);
+[...list.children].forEach((el,i)=>{
+let buttons=el.querySelectorAll(".criterion-order button");
+buttons[0].disabled=i===0;
+buttons[1].disabled=i===list.children.length-1;
+});
+}
+function saveSettings(){
+let mode=document.querySelector('input[name="scoreMode"]:checked')?.value||"ate7";
+let checks=[...document.querySelectorAll(".criteria-item")].filter(el=>el.querySelector('input[type="checkbox"]').checked).map(el=>el.dataset.criterion);
+S.scoreMode=mode;
+S.rankCriteria=checks;
+S.matches.forEach(m=>{m.scoreMode=mode});
+render();toast("Configurações salvas");
+}
+function teamsPage(){
+let manual = S.manualTeams || [];
+let options = `<option value="">Selecione</option>` + S.players.map(p=>`<option value="${esc(p)}">${esc(p)}</option>`).join("");
+let manualRows = Array.from({length:Math.max(4, Math.floor(S.players.length/2))},(_,i)=>{
+  let t=manual[i]||["",""];
+  return `<div class="manualteam"><span class="num">Dupla ${i+1}</span><select id="mt${i}a" onchange="manualChanged()">${options.replace(`value="${esc(t[0])}"`,`value="${esc(t[0])}" selected`)}</select><select id="mt${i}b" onchange="manualChanged()">${options.replace(`value="${esc(t[1])}"`,`value="${esc(t[1])}" selected`)}</select></div>`
+}).join("");
+return `<div class="card"><h2>🎲 Duplas e confrontos</h2><p class="muted">${S.players.length} jogadores cadastrados.</p><div class="grid"><button onclick="draw()">Sortear duplas</button><button class="secondary" onclick="shuffleAgain()">Sortear novamente</button></div></div>
+<div class="card"><h3>✍️ Montar duplas manualmente</h3><div class="hint">Escolha dois jogadores para cada dupla. Cada jogador pode aparecer somente uma vez. Ao salvar, os confrontos anteriores serão recriados.</div><div class="manualteams" style="margin-top:10px">${manualRows}</div><button style="width:100%;margin-top:12px" onclick="saveManualTeams()">✓ Salvar duplas manuais</button></div>
+<div class="card"><h3>Duplas atuais</h3>${S.teams.length?S.teams.map((t,i)=>`<div class="team"><strong>Dupla ${i+1}</strong><br>${esc(t[0])} / ${esc(t[1])}</div>`).join(""):"<div class='empty'>Cadastre pelo menos 8 jogadores e monte ou sorteie as duplas.</div>"}</div>
+${S.matches.length?`<div class="card"><b>${S.matches.length} confrontos criados.</b><br><button style="margin-top:10px" onclick="go('quadras')">Ir para as quadras →</button></div>`:""}`}
+
+function esc(v){return String(v??"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;")}
+function manualChanged(){return}
+function saveManualTeams(){
+if(S.players.length<8)return toast("Cadastre pelo menos 8 jogadores");
+let n=Math.floor(S.players.length/2), teams=[], used=[];
+for(let i=0;i<n;i++){
+ let a=document.getElementById("mt"+i+"a")?.value||"", b=document.getElementById("mt"+i+"b")?.value||"";
+ if(!a||!b)return toast("Preencha todas as duplas");
+ if(a===b)return toast("Uma dupla não pode ter o mesmo jogador");
+ if(used.includes(a)||used.includes(b))return toast("Cada jogador deve aparecer apenas uma vez");
+ used.push(a,b); teams.push([a,b]);
+}
+if(used.length!==S.players.length)return toast("Todos os jogadores devem estar em uma dupla");
+S.teams=teams; S.manualTeams=teams.map(t=>[...t]); makeMatches(); go("sorteio"); toast("Duplas manuais salvas");
+}
+function shuffled(a){return [...a].sort(()=>Math.random()-.5)}
+function draw(){if(S.players.length<8)return toast("Cadastre pelo menos 8 jogadores");let p=shuffled(S.players);S.teams=[];for(let i=0;i<p.length;i+=2)S.teams.push([p[i],p[i+1]]);S.manualTeams=S.teams.map(t=>[...t]);makeMatches();render();toast("Duplas sorteadas")}
+function shuffleAgain(){if(!S.players.length)return go("jogadores");draw()}
+function makeMatches(){S.matches=[];let id=1;for(let a=0;a<S.teams.length;a++)for(let b=a+1;b<S.teams.length;b++)S.matches.push({id:id++,a,b,sa:"",sb:"",done:false,court:((id-2)%3)+1,round:Math.floor((id-1)/3)+1,scoreMode:S.scoreMode});}
+function teamName(i){return S.teams[i]?S.teams[i].join(" / "):""}
+function currentMatches(c){return S.matches.filter(m=>m.court===c&&!m.done).slice(0,1)}
+function courtsPage(){return `<div class="card"><h2>🏖️ Quadras</h2><p class="muted">Acompanhe o jogo em andamento de cada quadra. Ao finalizar, o próximo confronto fica disponível.</p></div><div class="courts">${[1,2,3].map(c=>{let m=currentMatches(c)[0];return `<div class="court"><h3>Quadra ${c} <span class="live">${m?"● AO VIVO":"● LIVRE"}</span></h3>${m?matchHTML(m,true):"<div class='empty'>Nenhum jogo pendente nesta quadra.</div>"}</div>`}).join("")}</div>`}
+function gamesPage(){return `<div class="card"><h2>📋 Todos os jogos</h2><div class="tabs2">${[1,2,3].map(c=>`<button class="${S.round===c?'active':''}" onclick="filterRound(${c})">Quadra ${c}</button>`).join("")}<button class="${S.round===0?'active':''}" onclick="filterRound(0)">Todos</button></div>${(S.round?S.matches.filter(m=>m.court===S.round):S.matches).map(m=>matchHTML(m,false)).join("")||"<div class='empty'>Nenhum jogo criado.</div>"}</div>`}
+function filterRound(x){S.round=x;render()}
+function matchHTML(m,compact){
+let mode=m.scoreMode||S.scoreMode||"ate7";
+let max=mode==="ate7"?7:6;
+let placeholders=mode==="6x4"?"6":"0";
+let desc=mode==="ate7"?"Pontos (até 7)":mode==="6x4"?"Games (6×4)":"Games (somatória até 7)";
+return `<div class="match ${m.done?'done':'pending'}"><div class="matchhead"><span>Rodada ${m.round} • Quadra ${m.court}</span><span class="badge ${m.done?'':'pending'}">${m.done?'Finalizado':'Pendente'}</span></div><div class="teams">${teamName(m.a)}<br><span style="font-weight:500">×</span><br>${teamName(m.b)}</div>${m.done?`<div class="score"><b>${desc}</b><strong>${m.sa}</strong><strong>${m.sb}</strong></div>`:`<div class="score"><span>${desc}</span><input id="a${m.id}" type="number" min="0" max="${max}" value="${m.sa}" placeholder="${placeholders}"><input id="b${m.id}" type="number" min="0" max="${max}" value="${m.sb}" placeholder="${placeholders}"></div><button style="margin-top:9px;width:100%" onclick="finish(${m.id})">✓ Finalizar jogo</button>`}</div>`
+}
+function validScore(mode,a,b){
+if(!Number.isInteger(a)||!Number.isInteger(b)||a<0||b<0)return false;
+if(mode==="ate7")return a<=7&&b<=7&&a!==b;
+if(mode==="6x4")return (a===6&&b<=4)||(b===6&&a<=4);
+if(mode==="soma7")return a+b===7&&a!==b;
+return false;
+}
+function finish(id){
+let m=S.matches.find(x=>x.id===id),a=Number(document.getElementById("a"+id).value),b=Number(document.getElementById("b"+id).value),mode=m.scoreMode||S.scoreMode;
+if(!validScore(mode,a,b)){
+let msg=mode==="ate7"?"Digite pontos de 0 a 7, sem empate":mode==="6x4"?"No formato 6×4, uma dupla precisa fazer 6 e a outra no máximo 4":"Na somatória, os dois placares devem totalizar exatamente 7";
+return toast(msg);
+}
+m.sa=a;m.sb=b;m.done=true;render();toast("Resultado salvo")
+}
+function ranking(){
+let teams=S.teams||[];
+let data=teams.map((t,i)=>({i,name:t.join(" / "),j:0,w:0,l:0,pf:0,ps:0,s:0,head:{}}));
+S.matches.filter(m=>m.done).forEach(m=>{
+let a=+m.sa,b=+m.sb,A=data[m.a],B=data[m.b];
+A.j++;B.j++;A.pf+=a;A.ps+=b;B.pf+=b;B.ps+=a;A.s=A.pf-A.ps;B.s=B.pf-B.ps;
+if(a>b){A.w++;B.l++;}else{B.w++;A.l++;}
+A.head[m.b]=a>b?1:-1; B.head[m.a]=b>a?1:-1;
+});
+let criteria=S.rankCriteria||["wins","gamesFor","saldo","head"];
+return data.sort((a,b)=>{
+for(let c of criteria){
+let d=0;
+if(c==="wins")d=b.w-a.w;
+else if(c==="gamesFor")d=b.pf-a.pf;
+else if(c==="saldo")d=b.s-a.s;
+else if(c==="head" && a.head[b.i]!==undefined)d=b.head[a.i]-a.head[b.i];
+if(d)return d;
+}
+return a.name.localeCompare(b.name);
+});
+}
+function rankingPage(){let rows=ranking().map((x,i)=>`<tr><td><b>${i+1}</b></td><td>${x.name}</td><td>${x.j}</td><td>${x.w}</td><td>${x.l}</td><td>${x.pf}</td><td>${x.ps}</td><td>${x.s>0?"+":""}${x.s}</td></tr>`).join("");return `<div class="card"><h2>🏆 Classificação</h2><p class="muted">Critérios: ${criteriaSummary()}.</p><table><thead><tr><th>#</th><th>Dupla</th><th>J</th><th>V</th><th>D</th><th>PF</th><th>PS</th><th>Saldo</th></tr></thead><tbody>${rows||"<tr><td colspan='8'>Nenhuma dupla criada.</td></tr>"}</tbody></table></div>`}
+function newTournament(){if(confirm("Começar um novo torneio? Os dados atuais serão apagados.")){localStorage.removeItem("btc");location.reload()}}
+load();render();
+</script>
+
+<script>
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("./sw.js").catch(() => {});
+  });
+}
+</script>
+
+</body>
+</html>
